@@ -197,3 +197,37 @@ function o() {
 function tre() {
 	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
 }
+
+function updatesystem() {
+    echo "♢ Updating OS X and Apps from App Store"
+    sudo softwareupdate -ia
+    echo "♢ Updating Homebrew"
+    brew update
+    brew upgrade
+    brew cleanup
+    brew prune
+    brew cask cleanup
+}
+
+function cleandir() {
+    echo "♢ This command will delete .DS_Store, .TemporaryItems, .AppleDouble and ._* files"
+    local dir="$1"
+    if [ -z "$dir" ]; then
+        echo -e "\n♢ Searching Current Folder..."
+        dir=.
+    else
+        echo -e "\n♢ Searching ..."
+    fi
+    response='n'
+    find "$dir" \( -name ".DS_Store" -or -name ".TemporaryItems" -or -name ".AppleDouble" -or -name "._*" \);
+    echo
+    read "response?♢ Are you sure you want to delete these files? [y|n] "
+    if [[ $response =~ ^(yes|Yes|y|Y) ]];then
+        echo -en "\n♢ Deleting... "
+        find "$dir" \( -name ".DS_Store" -or -name ".TemporaryItems" -or -name ".AppleDouble" -or -name "._*" \) -delete;
+        echo -e "$(tput setaf 2)[done]$(tput sgr0)"
+         # find . \( -name ".DS_Store" -or -name ".TemporaryItems" -or -name ".Trashes" -or -name "._*" \) -exec rm -rf "{}" \; -prune
+    else
+        echo -e "$(tput setaf 2)Nothing happened$(tput sgr0)"
+    fi
+}
